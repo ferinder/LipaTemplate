@@ -17,12 +17,18 @@
     <ClInclude Include="operations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Corelation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="operations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Corelation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

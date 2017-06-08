@@ -19,6 +19,9 @@ int main()
 	histo(image);
 	binarization(image, 165);
 	correlation(image);
+	std::cout << "a tu nie";
+	binarization2(image,170);
+	image.ShowImage("bin");
 	//image.SaveImage("img\\bin.png");
 
 

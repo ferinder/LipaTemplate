@@ -1,8 +1,12 @@
-﻿  operations.cpp
+﻿  Corelation.cpp
+  main.cpp
+  operations.cpp
+operations.cpp(112): warning C4244: "=": konwersja z "__int64" do "int", możliwa utrata danych
+operations.cpp(115): warning C4244: "=": konwersja z "__int64" do "int", możliwa utrata danych
   Trwa generowanie kodu
-  5 of 248 functions ( 2.0%) were compiled, the rest were copied from previous compilation.
+  93 of 279 functions (33.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    22 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   LipaTemplate.vcxproj -> C:\Users\Szefu\Dropbox\STUDIA\sem I\PIAO\Lipa Final\LipaTemplate\\LipaTemplate.exe
   LipaTemplate.vcxproj -> C:\Users\Szefu\Dropbox\STUDIA\sem I\PIAO\Lipa Final\LipaTemplate\\LipaTemplate.pdb (Full PDB)

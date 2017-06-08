@@ -116,10 +116,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Corelation.h" />
     <ClInclude Include="lipa.h" />
     <ClInclude Include="operations.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Corelation.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="operations.cpp" />
   </ItemGroup>

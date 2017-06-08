@@ -9,6 +9,8 @@ void rgbTogray(Image3CH & rgbImg, Image1CH & grayImg);
 //binarization
 void binarization(Image1CH &input, double threshold);
 
+void binarization2(Image1CH & image, double threshold);
+
 //filtr medianowy
 void median(Image1CH & image);
 

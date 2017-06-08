@@ -25,10 +25,20 @@ void binarization(Image1CH &image, double threshold) {
 	Image1CH output(image.width(), image.height());
 	for (int i = 0; i < image.width(); ++i)
 		for (int j = 0; j < image.height(); ++j)
+			if (image(i, j).I() <= threshold) output(i, j).I() = 1;
+			else output(i, j).I() = 0;
+			image = output;
+};
+void binarization2(Image1CH &image, double threshold) {
+	threshold = threshold / 256;
+	Image1CH output(image.width(), image.height());
+	for (int i = 0; i < image.width(); ++i)
+		for (int j = 0; j < image.height(); ++j)
 			if (image(i, j).I() <= threshold) output(i, j).I() = 0;
 			else output(i, j).I() = 1;
 			image = output;
 };
+
 
 void median(Image1CH &image) {
 	std::vector<double> surrending;
@@ -72,37 +82,43 @@ void histo(Image1CH& image) {
 
 void correlation(Image1CH &image)
 {
-	std::vector<std::vector<int>> correlationMask = { //14x18;
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{0,0,0,0,0,0,0,0,5,5,5,5,5,5,5,0,0,0 },
-		{0,0,0,0,0,0,5,2,2,2,2,2,2,2,2,5,0,0 },
-		{0,0,0,0,5,2,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,0,0,5,2,1,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,0,5,2,1,1,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,0,5,2,1,1,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,5,2,1,1,1,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,5,1,1,1,1,1,1,1,1,1,1,1,1,2,5,0,0 },
-		{0,5,2,1,1,1,1,1,1,1,1,1,1,2,5,0,0,0 },
-		{0,5,2,1,1,1,1,1,1,1,1,1,2,5,0,0,0,0 },
-		{0,5,2,2,2,2,2,2,2,2,2,2,5,0,0,0,0,0 },
-		{0,0,5,5,5,5,5,5,5,5,0,0,0,0,0,0,0,0 },
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+	std::vector<std::vector<int>> correlationMask = { //15x19;
+		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },		//9x7
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+		{0,0,0,0,0,0,0,0,0,5,5,5,5,5,5,5,0,0,0 },
+		{0,0,0,0,0,0,0,5,2,2,2,2,2,2,2,2,5,0,0 },
+		{0,0,0,0,0,5,2,1,1,1,1,1,1,1,1,1,2,5,0 },
+		{0,0,0,0,5,2,1,1,1,1,1,1,1,1,1,1,2,5,0 },
+		{0,0,0,5,2,1,1,1,1,1,1,1,1,1,1,1,2,5,0 },
+		{0,0,0,5,2,1,1,1,1,1,1,1,1,1,1,1,2,5,0 },
+		{0,0,5,2,1,1,1,1,1,1,1,1,1,1,1,1,2,5,0 },
+		{0,0,5,1,1,1,1,1,1,1,1,1,1,1,1,2,5,0,0 },
+		{0,0,5,2,1,1,1,1,1,1,1,1,1,1,2,5,0,0,0 },
+		{0,0,5,2,1,1,1,1,1,1,1,1,1,2,5,0,0,0,0 },
+		{0,0,5,2,2,2,2,2,2,2,2,2,2,5,0,0,0,0,0 },
+		{0,0,0,5,5,5,5,5,5,5,5,0,0,0,0,0,0,0,0 },
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 	};
 	Image1CH output(image.width(), image.height());
-	double temp = 0;
-	for (int i = 9; i < image.width() - 18; ++i) {
-		for (int j = 0; j < image.height() - 14; ++j) {
+	double temp;
+	int distX, distY;
+	for (int i = 9; i < image.width()-9; i++)
+	{
+		for (int j = 7 ; j < image.height() - 7; ++j)
+		{
 			temp = 0;
-			for (int k=0;k<18;++k)
+			for (auto rowIt = correlationMask.cbegin(); rowIt != correlationMask.cend(); ++rowIt)
 			{
-				for (int l=0;l<14;++l) 
+				distY = std::distance(correlationMask.cbegin(), rowIt);
+				for (auto columnIt = rowIt->cbegin(); columnIt != rowIt->cend(); ++columnIt)
 				{
- 					temp += image(i + k,j + l).I() *correlationMask[k][l];
+					distX = std::distance(rowIt->cbegin(), columnIt);
+					temp += image(i - 9 + distX, j - 7 + distY).I() * *columnIt;
 				}
 			}
-			output(i, j).I() = temp / 346;
+			output(i,j).I() = temp / 346;
 		}
-	}
-	output.ShowImage("bin");
 
+
+	}
 };
