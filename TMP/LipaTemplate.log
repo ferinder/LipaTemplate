@@ -1,11 +1,8 @@
-﻿  Notes.cpp
-  operations.cpp
-operations.cpp(122): warning C4244: "argument": konwersja z "double" do "const int", możliwa utrata danych
-operations.cpp(153): warning C4244: "argument": konwersja z "double" do "const int", możliwa utrata danych
+﻿  main.cpp
   Trwa generowanie kodu
-  41 of 663 functions ( 6.2%) were compiled, the rest were copied from previous compilation.
-    29 functions were new in current compilation
-    7 functions had inline decision re-evaluated but remain unchanged
+  12 of 842 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    3 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   LipaTemplate.vcxproj -> C:\Users\Szefu\Dropbox\STUDIA\sem I\PIAO\Lipa Final\LipaTemplate\\LipaTemplate.exe
   LipaTemplate.vcxproj -> C:\Users\Szefu\Dropbox\STUDIA\sem I\PIAO\Lipa Final\LipaTemplate\\LipaTemplate.pdb (Full PDB)

@@ -83,18 +83,17 @@ void histo(Image1CH& image) {
 			image(i, j).Intensity() = image(i, j).Intensity()*C;
 }
 
-void correlation(Image1CH &image)
+void correlation(Image1CH &image, Image1CH &bin,Image1CH &edges)
 {
 	Corelation Corel(image);
 	Corel.calcCorelation(image);
 	Corel.findNotesCenters();
-	findNotes(Corel);
-
+	findNotes(Corel, bin,edges);
 };
 
-void findNotes(Corelation & cor)
+void findNotes(Corelation & cor,Image1CH & bin, Image1CH &edges)
 {
-	Notes notes(cor);
+	Notes notes(cor,bin,edges);
 }
 
 bool findZeros(std::vector<int> &vec) {
@@ -110,7 +109,7 @@ bool findZeros(std::vector<int> &vec) {
 void erode(Image1CH & input)
 {
 	Image1CH output(input.width(), input.height());
-	std::vector<int> surrending(4);
+	std::vector<int> surrending;
 	for (int i = 1; i < input.width() - 1; ++i)
 	{
 		for (int j = 1; j < input.height() - 1; ++j)
@@ -181,3 +180,40 @@ void findVerticalEdges(Image1CH & image)
 	image = out;
 
 }
+
+
+void rhorerBinarization(Image1CH & image,double k)
+{
+	Image1CH output(image.width(), image.height());
+	for (int i = 12; i < image.width()-12; ++i)
+	{
+		for (int j = 12; j < image.height()-12; ++j)
+		{
+			double avarge = 0;
+			for (int k = -12; k < 13; ++k)
+			{
+				for (int l = -12; l < 13; ++l) 
+				{
+					avarge += image(i + k, j + l).I();
+				}
+			}
+			avarge = avarge / (625*k);
+			if (image(i,j).I()>=avarge)
+			{
+				output(i, j).I() = 0;
+			}
+			else
+			{
+				output(i, j).I() = 1;
+			}
+		}
+	}
+	image = output;
+}
+
+void close(Image1CH & image)
+{
+	dilatation(image);
+	erode(image);
+}
+

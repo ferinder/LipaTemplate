@@ -30,10 +30,11 @@ void Corelation::allocateMemory()
 
 void Corelation::calcCorelation(Image1CH & image) {
 	double temp;
+	Image1CH out(image.width(), image.height());
 	int distX, distY;
-	for (int i = 9; i < _width - 9; i++)
+	for (int i = 8; i < _width - 8; i++)
 	{
-		for (int j = 7; j < _height/2 - 7; ++j)
+		for (int j = 6; j < _height/2 - 6; ++j)
 		{
 			temp = 0;
 			for (auto rowIt = _corelMask.cbegin(); rowIt != _corelMask.cend(); ++rowIt)
@@ -42,12 +43,15 @@ void Corelation::calcCorelation(Image1CH & image) {
 				for (auto columnIt = rowIt->cbegin(); columnIt != rowIt->cend(); ++columnIt)
 				{
 					distX = std::distance(rowIt->cbegin(), columnIt);
-					temp += image(i - 9 + distX, j - 7 + distY).I() * *columnIt;
+					temp += image(i - 8 + distX, j - 6 + distY).I() * *columnIt;
 				}
 			}
-			_corelTab[i][j] = temp / 346;
+			int maskVal = [&]()->int {int val = 0; for (auto iterator : _corelMask) for (auto iterator2 : iterator) val += iterator2; return val; }();
+			out(i, j).I() = temp / maskVal;
+			_corelTab[i][j] = temp / maskVal;
 		}
 	}
+	out.ShowImage("bin");
 }
 
 std::vector<std::pair<int, int>> Corelation::findNotesCenters()
@@ -58,9 +62,9 @@ std::vector<std::pair<int, int>> Corelation::findNotesCenters()
 	{
 		for (int j = 3; j < _height/2 - 3; ++j)
 		{
-			if (_corelTab[i][j]>0.7)
+			if (_corelTab[i][j]>0.40)
 			{
-				if ([&]() ->bool{
+				if ([&]()->bool{
 					for (int k = -3; k < 4; ++k)
 						for (int l = -3; l < 4; ++l)
 							if (_corelTab[i + k][j + l] > _corelTab[i][j]) return false;
@@ -73,13 +77,14 @@ std::vector<std::pair<int, int>> Corelation::findNotesCenters()
 	}
 
 	//usuwanie punktów z otoczenia i pierwszych zbêdnych z piêciolinii
-	for (auto it = _notesCenters.begin(); it != _notesCenters.end() - 1; ++it)
+	for (auto it = _notesCenters.begin(); it != _notesCenters.end() ; ++it)
 	{
 		if (it->first < 48
-			||(it->first > 55 
-				&& it->first < 75 
-				&& it->second>200 
-				&& it->second < 300) 
+			|| (it->first > 55
+				&& it->first < 75
+				&& it->second > 200
+				&& it->second < 300
+				|| it->second <100 ) 
 			)
 		{
 			_notesCenters.erase(it);
@@ -92,7 +97,7 @@ std::vector<std::pair<int, int>> Corelation::findNotesCenters()
 		{
 			if (iter != iter2)
 			{
-				if (hypot((iter2->first - iter->first), (iter2->second - iter->second)) < 12)
+				if (hypot((iter2->first - iter->first), (iter2->second - iter->second)) < 25)
 				{
 					_notesCenters.erase(iter2);
 					iter2 = std::prev(iter2);
@@ -116,8 +121,15 @@ void Corelation::printNotesCenters() {
 		//image(it.first, it.second).Red() = 1;
 
 		image(it.first, it.second).G() = 1;
-
+		image(it.first-1, it.second).G() = 1;
+		image(it.first, it.second-1).G() = 1;
+		image(it.first, it.second+1).G() = 1;
+		image(it.first+1, it.second).G() = 1;
 		image(it.first, it.second).B() = 1;
+		image(it.first - 1, it.second).B() = 1;
+		image(it.first, it.second - 1).B() = 1;
+		image(it.first, it.second + 1).B() = 1;
+		image(it.first + 1, it.second).B() = 1;
 	}
-	image.ShowImage("img\\i_think_centers.png");
+	image.SaveImage("img\\i_think_centers.png");
 }

@@ -1,0 +1,162 @@
+1 position 99:259
+sumX: 119
+sumY: 119
+2 position 165:259
+sumX: 110
+sumY: 110
+3 position 233:258
+sumX: 57
+sumY: 57
+4 position 354:258
+sumX: 117
+sumY: 117
+5 position 424:258
+sumX: 137
+sumY: 137
+6 position 495:258
+sumX: 83
+sumY: 83
+7 position 623:258
+sumX: 139
+sumY: 139
+8 position 697:248
+sumX: 120
+sumY: 120
+9 position 772:270
+sumX: 141
+sumY: 141
+10 position 847:271
+sumX: 170
+sumY: 170
+11 position 894:266
+sumX: 175
+sumY: 175
+12 position 961:263
+sumX: 93
+sumY: 93
+13 position 66:441
+sumX: 116
+sumY: 116
+14 position 132:440
+sumX: 129
+sumY: 129
+15 position 198:440
+sumX: 134
+sumY: 134
+16 position 265:440
+sumX: 183
+sumY: 183
+17 position 307:440
+sumX: 179
+sumY: 179
+18 position 364:440
+sumX: 132
+sumY: 132
+19 position 433:446
+sumX: 129
+sumY: 129
+20 position 503:447
+sumX: 153
+sumY: 153
+21 position 573:447
+sumX: 190
+sumY: 190
+22 position 617:447
+sumX: 202
+sumY: 202
+23 position 676:447
+sumX: 131
+sumY: 131
+24 position 741:453
+sumX: 161
+sumY: 161
+25 position 807:454
+sumX: 138
+sumY: 138
+26 position 872:449
+sumX: 135
+sumY: 135
+27 position 953:455
+sumX: 81
+sumY: 81
+28 position 1066:441
+sumX: 57
+sumY: 57
+29 position 61:633
+sumX: 128
+sumY: 128
+30 position 130:633
+sumX: 138
+sumY: 138
+31 position 199:633
+sumX: 103
+sumY: 103
+32 position 325:634
+sumX: 142
+sumY: 142
+33 position 398:635
+sumX: 146
+sumY: 146
+34 position 470:636
+sumX: 106
+sumY: 106
+35 position 603:637
+sumX: 162
+sumY: 162
+36 position 680:627
+sumX: 133
+sumY: 133
+37 position 757:650
+sumX: 160
+sumY: 160
+38 position 834:650
+sumX: 220
+sumY: 220
+39 position 883:645
+sumX: 205
+sumY: 205
+40 position 951:642
+sumX: 123
+sumY: 123
+41 position 57:817
+sumX: 144
+sumY: 144
+42 position 122:817
+sumX: 160
+sumY: 160
+43 position 186:818
+sumX: 143
+sumY: 143
+44 position 251:819
+sumX: 146
+sumY: 146
+45 position 332:820
+sumX: 151
+sumY: 151
+46 position 405:826
+sumX: 149
+sumY: 149
+47 position 478:827
+sumX: 161
+sumY: 161
+48 position 552:828
+sumX: 208
+sumY: 208
+49 position 598:829
+sumX: 232
+sumY: 232
+50 position 658:819
+sumX: 140
+sumY: 140
+51 position 727:820
+sumX: 139
+sumY: 139
+52 position 797:826
+sumX: 149
+sumY: 149
+53 position 866:838
+sumX: 158
+sumY: 158
+54 position 944:846
+sumX: 190
+sumY: 190
