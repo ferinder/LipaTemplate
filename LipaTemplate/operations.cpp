@@ -1,5 +1,6 @@
 #include "lipa.h"
 #include "Corelation.h"
+#include "Notes.h"
 #include "operations.h"
 
 
@@ -61,7 +62,7 @@ void median(Image1CH &image) {
 }
 
 void histo(Image1CH& image) {
-	Image1CH in(image.width(),image.height());
+	Image1CH in(image.width(), image.height());
 	in = image;
 	double fmin = 1;
 	double fmax = 0;
@@ -73,7 +74,7 @@ void histo(Image1CH& image) {
 		for (int j = 0; j < in.height(); ++j)  //iterate by cols
 			if (fmax < in(i, j).Intensity())
 				fmax = in(i, j).Intensity();
-	double C = 1/(fmax - fmin);
+	double C = 1 / (fmax - fmin);
 	for (int i = 0; i < image.width(); ++i)  //iterate by rows
 		for (int j = 0; j < image.height(); ++j)  //iterate by cols
 			image(i, j).Intensity() = in(i, j).Intensity() - fmin;
@@ -87,7 +88,14 @@ void correlation(Image1CH &image)
 	Corelation Corel(image);
 	Corel.calcCorelation(image);
 	Corel.findNotesCenters();
+	findNotes(Corel);
+
 };
+
+void findNotes(Corelation & cor)
+{
+	Notes notes(cor);
+}
 
 bool findZeros(std::vector<int> &vec) {
 
@@ -103,7 +111,7 @@ void erode(Image1CH & input)
 {
 	Image1CH output(input.width(), input.height());
 	std::vector<int> surrending(4);
-	for (int i = 1; i < input.width() - 1; ++i) 
+	for (int i = 1; i < input.width() - 1; ++i)
 	{
 		for (int j = 1; j < input.height() - 1; ++j)
 		{
@@ -135,11 +143,11 @@ void dilatation(Image1CH & input)
 {
 	Image1CH output(input.width(), input.height());
 	std::vector<int> surrending(9);
-	for (int i = 1; i < input.width() - 1; ++i) 
+	for (int i = 1; i < input.width() - 1; ++i)
 	{
 		for (int j = 1; j < input.height() - 1; ++j)
 		{
-			for (int k = -1; k<2; ++k)
+			for (int k = -1; k < 2; ++k)
 				for (int l = -1; l < 2; ++l)
 				{
 					surrending.push_back(input(i + k, j + l).I());
@@ -150,4 +158,26 @@ void dilatation(Image1CH & input)
 		}
 	}
 	input = output;
+}
+
+void findVerticalEdges(Image1CH & image)
+{
+	Image1CH out(image.width(), image.height());
+	double kernel[3][3] = { -1,  0,  1,
+							-2,  0, 2,
+							-1, 0, 1 };
+	double temp;
+	for (int i = 1; i < image.width() - 1; i++) { //iterate by rows
+		for (int j = 100; j < image.height()/2 - 1; j++) { //iterate by cols
+			temp = 0;
+			for (int k = 0; k < 3; k++) {
+				for (int l = 0; l < 3; l++) {
+					temp += image(i + k - 1, j + l - 1).I() *kernel[k][l];
+				}
+			}
+			out(i, j).I() = temp;
+		}
+	}
+	image = out;
+
 }

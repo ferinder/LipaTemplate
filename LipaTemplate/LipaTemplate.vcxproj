@@ -118,11 +118,13 @@
   <ItemGroup>
     <ClInclude Include="Corelation.h" />
     <ClInclude Include="lipa.h" />
+    <ClInclude Include="Notes.h" />
     <ClInclude Include="operations.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Corelation.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Notes.cpp" />
     <ClCompile Include="operations.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

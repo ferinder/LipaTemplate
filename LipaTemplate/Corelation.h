@@ -31,7 +31,7 @@ public:
 	Corelation(Image1CH & image);
 	~Corelation();
 	void calcCorelation(Image1CH & image);
-	void findNotesCenters();
+	std::vector<std::pair<int,int>> findNotesCenters();
 private:
 	void allocateMemory();
 	void printNotesCenters();

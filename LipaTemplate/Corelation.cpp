@@ -50,7 +50,7 @@ void Corelation::calcCorelation(Image1CH & image) {
 	}
 }
 
-void Corelation::findNotesCenters()
+std::vector<std::pair<int, int>> Corelation::findNotesCenters()
 {
 	//znajdowanie maksimum lokalnego
 	double r = 0;
@@ -100,18 +100,24 @@ void Corelation::findNotesCenters()
 			}
 		}
 	}
+	this->printNotesCenters();
+	return _notesCenters;
 }
 
 void Corelation::printNotesCenters() {
+	for (auto it : _notesCenters)
+	{
+		std::cout << it.first << "  " << it.second << std::endl;
+	}
 	Image3CH image(1200, 1920);
 	image.LoadImage("img\\ideal.png");
 	for (auto it : _notesCenters)
 	{
 		//image(it.first, it.second).Red() = 1;
 
-		//image(it.first, it.second).G() = 1;
+		image(it.first, it.second).G() = 1;
 
 		image(it.first, it.second).B() = 1;
 	}
-	image.SaveImage("img\\i_think_centers.png");
+	image.ShowImage("img\\i_think_centers.png");
 }

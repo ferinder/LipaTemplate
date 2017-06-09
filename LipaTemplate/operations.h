@@ -1,4 +1,5 @@
 #pragma once
+#include "Corelation.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -17,8 +18,11 @@ void median(Image1CH & image);
 //expand histogram
 void histo(Image1CH & image);
 
+
+void findNotes(Corelation & cor);
 //fining notes in image
 void correlation(Image1CH & image);
+
 
 bool findZeros(std::vector<int>& vec);
 
@@ -27,3 +31,5 @@ void erode(Image1CH & input);
 bool findOnes(std::vector<int>& vec);
 
 void dilatation(Image1CH & input);
+
+void findVerticalEdges(Image1CH & image);

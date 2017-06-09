@@ -9,16 +9,22 @@ int main()
 	Image1CH image(1200, 1920);
 	{
 		Image3CH colourImage(1200, 1920);
-		colourImage.LoadImage("img\\noised.png");
+		colourImage.LoadImage("img\\ideal.png");
 		rgbTogray(colourImage, image);
 	}
+	Image1CH Edges(1200, 1920);
 
 	median(image);
 	histo(image);
+	Edges = image;
 	binarization(image, 165);
 	correlation(image);
 	binarization2(image,170);
-	image.ShowImage("bin");
+	findVerticalEdges(Edges);
+	binarization2(Edges,25);
+	dilatation(Edges);
+	erode(Edges);
+	Edges.ShowImage("bin");
 
 	return 0;
 }
