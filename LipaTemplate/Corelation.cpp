@@ -22,7 +22,7 @@ Corelation::~Corelation()
 
 void Corelation::allocateMemory()
 {
-	for (int i = 0; i < _width; ++i) 
+	for (int i = 0; i < _width; ++i)
 	{
 		_corelTab.push_back(std::vector<double>(_height));
 	}
@@ -34,7 +34,7 @@ void Corelation::calcCorelation(Image1CH & image) {
 	int distX, distY;
 	for (int i = 8; i < _width - 8; i++)
 	{
-		for (int j = 6; j < _height/2 - 6; ++j)
+		for (int j = 6; j < _height / 2 - 6; ++j)
 		{
 			temp = 0;
 			for (auto rowIt = _corelMask.cbegin(); rowIt != _corelMask.cend(); ++rowIt)
@@ -54,17 +54,17 @@ void Corelation::calcCorelation(Image1CH & image) {
 	out.ShowImage("bin");
 }
 
-std::vector<std::pair<int, int>> Corelation::findNotesCenters()
+void Corelation::findNotesCenters()
 {
 	//znajdowanie maksimum lokalnego
 	double r = 0;
 	for (int i = 3; i < _width - 3; ++i)
 	{
-		for (int j = 3; j < _height/2 - 3; ++j)
+		for (int j = 3; j < _height / 2 - 3; ++j)
 		{
-			if (_corelTab[i][j]>0.40)
+			if (_corelTab[i][j] > 0.40)
 			{
-				if ([&]()->bool{
+				if ([&]()->bool {
 					for (int k = -3; k < 4; ++k)
 						for (int l = -3; l < 4; ++l)
 							if (_corelTab[i + k][j + l] > _corelTab[i][j]) return false;
@@ -76,21 +76,22 @@ std::vector<std::pair<int, int>> Corelation::findNotesCenters()
 		}
 	}
 
-	//usuwanie punktów z otoczenia i pierwszych zbêdnych z piêciolinii
-	for (auto it = _notesCenters.begin(); it != _notesCenters.end() ; ++it)
+	//usuwanie niew³aœciwych maksimów z piêciolinii le¿¹cych poza ni¹, lub na meritum
+	for (auto it = _notesCenters.begin(); it != _notesCenters.end(); ++it)
 	{
 		if (it->first < 48
 			|| (it->first > 55
 				&& it->first < 75
 				&& it->second > 200
 				&& it->second < 300
-				|| it->second <100 ) 
+				|| it->second < 100)
 			)
 		{
 			_notesCenters.erase(it);
 			it = std::prev(it);
 		}
 	}
+	//usuwanie punktów z otoczenia maksimów
 	for (auto iter = _notesCenters.begin(); iter != _notesCenters.end(); ++iter)
 	{
 		for (auto iter2 = _notesCenters.begin(); iter2 != _notesCenters.end(); ++iter2)
@@ -105,26 +106,18 @@ std::vector<std::pair<int, int>> Corelation::findNotesCenters()
 			}
 		}
 	}
-	this->printNotesCenters();
-	return _notesCenters;
 }
 
 void Corelation::printNotesCenters() {
-	for (auto it : _notesCenters)
-	{
-		std::cout << it.first << "  " << it.second << std::endl;
-	}
 	Image3CH image(1200, 1920);
 	image.LoadImage("img\\ideal.png");
 	for (auto it : _notesCenters)
 	{
-		//image(it.first, it.second).Red() = 1;
-
 		image(it.first, it.second).G() = 1;
-		image(it.first-1, it.second).G() = 1;
-		image(it.first, it.second-1).G() = 1;
-		image(it.first, it.second+1).G() = 1;
-		image(it.first+1, it.second).G() = 1;
+		image(it.first - 1, it.second).G() = 1;
+		image(it.first, it.second - 1).G() = 1;
+		image(it.first, it.second + 1).G() = 1;
+		image(it.first + 1, it.second).G() = 1;
 		image(it.first, it.second).B() = 1;
 		image(it.first - 1, it.second).B() = 1;
 		image(it.first, it.second - 1).B() = 1;

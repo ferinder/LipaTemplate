@@ -6,17 +6,16 @@ Notes::Notes()
 {
 }
 
-Notes::Notes(Corelation & corel, Image1CH & bin, Image1CH & edges)
+Notes::Notes(Corelation & corel, Image1CH & edges)
 {
 	std::vector<std::pair<int, int>> tempVec;
-	for (auto it : corel.findNotesCenters())
+	for (auto it : corel.getNotesCenters())
 	{
 		tempVec.push_back(it);
 	}
 	sortNotesAndAdd(tempVec);
 	findValue();
 	findPitch(edges);
-	calcLocalHisto(bin);
 	saveNotesToFIle();
 	printNotes();
 
@@ -30,60 +29,11 @@ Notes::~Notes()
 void Notes::saveNotesToFIle()
 {
 	std::ofstream file("notes.txt");
+	file << "numer \t" << "dzwiek\t" << "dlugosc\t" << "pozycja x:y" << std::endl;
 	for (auto it : _notes)
 	{
-		file << it.number << " position " << it.position.first << ':' << it.position.second << std::endl;
-		int i = 0;
-		int val = 0;
-		for (auto it2 : it.localHisto.first)
-		{
-			val += it2;
-		}
-		file << "sumX: " << val << std::endl;
-		val = 0;
-		for (auto it2 : it.localHisto.second)
-		{
-			val += it2;
-		}
-		file << "sumY: " << val << std::endl;
-		/*for (auto it2 : it.localHisto.first)
-		{
-			file << i <<"  "<<it2 << std::endl;
-			++i;
-		}
-		i = 0;
-		for (auto it2 : it.localHisto.second)
-		{
-			file << i << "  " << it2 << std::endl;
-			++i;
-		}*/
-	}
-	file.close();
-}
-
-void Notes::calcLocalHisto(Image1CH & image)
-{
-	for (auto it = _notes.begin(); it < _notes.end(); ++it)
-	{
-		for (int i = it->position.first - 18; i < it->position.first + 18; ++i)
-		{
-			int colVal = 0;
-			for (int j = it->position.second - 40; j < it->position.second + 18; ++j)
-			{
-				colVal += image(i, j).I();
-			}
-			it->localHisto.first.push_back(colVal);
-		}
-
-		for (int j = it->position.second - 40; j < it->position.second + 18; ++j)
-		{
-			int colVal = 0;
-			for (int i = it->position.first - 18; i < it->position.first + 18; ++i)
-			{
-				colVal += image(i, j).I();
-			}
-			it->localHisto.second.push_back(colVal);
-		}
+		file << it.number << "\t" << it.pitch << "\t" << it.value << "\t" << it.position.first << ':' << it.position.second << std::endl;
+		file.close();
 	}
 }
 
@@ -134,12 +84,12 @@ void Notes::findValue()
 	for (auto it = _notes.rbegin(); it != _notes.rend(); ++it)
 	{
 		dist = dist - it->position.first;
-		if (dist < 0)
+		if (dist < 0) //jeœli odleg³oœæ jest mniejsza od zera to znaczy, ¿e przeszliœmy do nuty z kolejnej pieciolinii
 		{
 			dist = 1170 - it->position.first;
 		}
 
-		if (dist <= 240 && dist >138)
+		if (dist <= 240 && dist > 138)
 		{
 			it->value = 1;
 			dist = it->position.first;
@@ -157,7 +107,7 @@ void Notes::findValue()
 			dist = it->position.first;
 			val -= 0.25;
 		}
-		else if (dist <= 50 && dist >25)
+		else if (dist <= 50 && dist > 25)
 		{
 			it->value = 0.125;
 			dist = it->position.first;
@@ -168,49 +118,12 @@ void Notes::findValue()
 			it->value = 10000;
 			dist = it->position.first;
 		}
-		if (val==0)
+		if (val == 0)
 		{
 			dist = dist - 24;
 			val = 1;
 		}
 	}
-
-	//for (auto it = _notes.begin(); it != _notes.end() - 1; ++it)
-	//{
-
-	//	if ((it + 1) != _notes.end())
-	//	{
-	//		int distance = (it + 1)->position.first - it->position.first;
-	//		if (distance < 68)
-	//		{
-	//			it->value = 0.125;
-	//			val -= 0.125;
-	//		}
-	//		else if (distance > 68 && distance < 70)
-	//		{
-	//			it->value = 0.25;
-	//			val -= 0.25;
-	//		}
-	//		else if (distance > 70 && distance < 140)
-	//		{
-	//			it->value = 0.5;
-	//			val -= 0.5;
-	//		}
-	//		else if (distance > 140 && distance < 170)
-	//		{
-	//			it->value = 1;
-	//			val -= 1;
-	//		}
-	//		else if (distance > 170)
-	//		{
-	//			it->value = val;
-	//		}
-	//	}
-	//	if (val <= 0)
-	//	{
-	//		val = 1;
-	//	}
-	//}
 }
 
 void Notes::findPitch(Image1CH & edges)

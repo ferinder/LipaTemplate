@@ -1,8 +1,5 @@
-﻿  main.cpp
-  Trwa generowanie kodu
-  12 of 842 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    3 functions had inline decision re-evaluated but remain unchanged
+﻿  Trwa generowanie kodu
+  All 815 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Zakończono generowanie kodu
   LipaTemplate.vcxproj -> C:\Users\Szefu\Dropbox\STUDIA\sem I\PIAO\Lipa Final\LipaTemplate\\LipaTemplate.exe
   LipaTemplate.vcxproj -> C:\Users\Szefu\Dropbox\STUDIA\sem I\PIAO\Lipa Final\LipaTemplate\\LipaTemplate.pdb (Full PDB)
