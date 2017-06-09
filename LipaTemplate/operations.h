@@ -19,3 +19,11 @@ void histo(Image1CH & image);
 
 //fining notes in image
 void correlation(Image1CH & image);
+
+bool findZeros(std::vector<int>& vec);
+
+void erode(Image1CH & input);
+
+bool findOnes(std::vector<int>& vec);
+
+void dilatation(Image1CH & input);

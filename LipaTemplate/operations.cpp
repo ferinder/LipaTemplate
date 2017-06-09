@@ -1,4 +1,5 @@
 #include "lipa.h"
+#include "Corelation.h"
 #include "operations.h"
 
 
@@ -29,6 +30,7 @@ void binarization(Image1CH &image, double threshold) {
 			else output(i, j).I() = 0;
 			image = output;
 };
+
 void binarization2(Image1CH &image, double threshold) {
 	threshold = threshold / 256;
 	Image1CH output(image.width(), image.height());
@@ -82,43 +84,70 @@ void histo(Image1CH& image) {
 
 void correlation(Image1CH &image)
 {
-	std::vector<std::vector<int>> correlationMask = { //15x19;
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },		//9x7
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{0,0,0,0,0,0,0,0,0,5,5,5,5,5,5,5,0,0,0 },
-		{0,0,0,0,0,0,0,5,2,2,2,2,2,2,2,2,5,0,0 },
-		{0,0,0,0,0,5,2,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,0,0,0,5,2,1,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,0,0,5,2,1,1,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,0,0,5,2,1,1,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,0,5,2,1,1,1,1,1,1,1,1,1,1,1,1,2,5,0 },
-		{0,0,5,1,1,1,1,1,1,1,1,1,1,1,1,2,5,0,0 },
-		{0,0,5,2,1,1,1,1,1,1,1,1,1,1,2,5,0,0,0 },
-		{0,0,5,2,1,1,1,1,1,1,1,1,1,2,5,0,0,0,0 },
-		{0,0,5,2,2,2,2,2,2,2,2,2,2,5,0,0,0,0,0 },
-		{0,0,0,5,5,5,5,5,5,5,5,0,0,0,0,0,0,0,0 },
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-	};
-	Image1CH output(image.width(), image.height());
-	double temp;
-	int distX, distY;
-	for (int i = 9; i < image.width()-9; i++)
+	Corelation Corel(image);
+	Corel.calcCorelation(image);
+	Corel.findNotesCenters();
+};
+
+bool findZeros(std::vector<int> &vec) {
+
+	for (auto it = vec.cbegin(); it != vec.cend(); ++it)
 	{
-		for (int j = 7 ; j < image.height() - 7; ++j)
+		if (!*it) return true;
+	}
+	return false;
+}
+
+
+void erode(Image1CH & input)
+{
+	Image1CH output(input.width(), input.height());
+	std::vector<int> surrending(4);
+	for (int i = 1; i < input.width() - 1; ++i) 
+	{
+		for (int j = 1; j < input.height() - 1; ++j)
 		{
-			temp = 0;
-			for (auto rowIt = correlationMask.cbegin(); rowIt != correlationMask.cend(); ++rowIt)
+			for (int k = -1; k < 2; ++k)
 			{
-				distY = std::distance(correlationMask.cbegin(), rowIt);
-				for (auto columnIt = rowIt->cbegin(); columnIt != rowIt->cend(); ++columnIt)
+				for (int l = -1; l < 2; ++l)
 				{
-					distX = std::distance(rowIt->cbegin(), columnIt);
-					temp += image(i - 9 + distX, j - 7 + distY).I() * *columnIt;
+					surrending.push_back(input(i + k, j + l).I());
 				}
 			}
-			output(i,j).I() = temp / 346;
+			if (findZeros(surrending)) output(i, j).I() = 0;
+			else output(i, j).I() = 1;
+			surrending.clear();
 		}
-
-
 	}
-};
+	input = output;
+}
+
+bool findOnes(std::vector<int> &vec) {
+
+	for (auto it = vec.cbegin(); it != vec.cend(); ++it)
+	{
+		if (*it) return true;
+	}
+	return false;
+}
+
+void dilatation(Image1CH & input)
+{
+	Image1CH output(input.width(), input.height());
+	std::vector<int> surrending(9);
+	for (int i = 1; i < input.width() - 1; ++i) 
+	{
+		for (int j = 1; j < input.height() - 1; ++j)
+		{
+			for (int k = -1; k<2; ++k)
+				for (int l = -1; l < 2; ++l)
+				{
+					surrending.push_back(input(i + k, j + l).I());
+				}
+			if (findOnes(surrending)) output(i, j).I() = 1;
+			else output(i, j).I() = 0;
+			surrending.clear();
+		}
+	}
+	input = output;
+}
