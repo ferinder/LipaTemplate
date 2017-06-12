@@ -13,11 +13,11 @@ Notes::Notes(Corelation & corel, Image1CH & edges)
 	{
 		tempVec.push_back(it);
 	}
-	sortNotesAndAdd(tempVec);
-	findValue();
-	findPitch(edges);
-	saveNotesToFIle();
-	printNotes();
+	this->sortNotesAndAdd(tempVec);
+	this->findValue();
+	this->findPitch(edges);
+	this->saveNotesToFIle();
+	this->printNotes();
 
 }
 
@@ -33,8 +33,8 @@ void Notes::saveNotesToFIle()
 	for (auto it : _notes)
 	{
 		file << it.number << "\t" << it.pitch << "\t" << it.value << "\t" << it.position.first << ':' << it.position.second << std::endl;
-		file.close();
 	}
+	file.close();
 }
 
 void Notes::sortNotesAndAdd(std::vector<std::pair<int, int>> & noteVec)
@@ -42,7 +42,7 @@ void Notes::sortNotesAndAdd(std::vector<std::pair<int, int>> & noteVec)
 	std::sort(noteVec.begin(), noteVec.end(),
 		[](std::pair<int, int> a, std::pair<int, int> b) {return a.second < b.second; });
 	int num = 1;
-	for (int i = 150; i < 850; )
+	for (int i = 150; i < 850; i += 190)
 	{
 		std::vector<note> tempNoteVec;
 		for (auto it : noteVec)
@@ -50,14 +50,11 @@ void Notes::sortNotesAndAdd(std::vector<std::pair<int, int>> & noteVec)
 			if (it.second > i && it.second < i + 190)
 			{
 				note tempNote;
-				std::cout << "note pos" << it.first << "  " << it.second << std::endl;
 				tempNote.position = it;
 				tempNoteVec.push_back(tempNote);
 			}
 		}
-		i += 190;
 		std::sort(tempNoteVec.begin(), tempNoteVec.end(), [](note a, note b) {return a.position.first < b.position.first; });
-
 		for (auto it : tempNoteVec)
 		{
 			it.number = num;
@@ -78,9 +75,12 @@ void Notes::printNotes()
 }
 
 void Notes::findValue()
-{
+{/* funkcja oblicza odle³oœæ œrodka nuty od zadanej granicy,
+ nastêpnie na jej podstawie okreœla czas trwania nuty. Nastêpnie 
+ zmienna dist przechowuje wspó³rzêdn¹ œrodka nuty od której liczona 
+ jest odleg³oœæ dla kolejnej nuty.*/
 	double val = 1;
-	int dist = 1170;
+	int dist = 1170; //przyjêto granicê piêciolinii z prawej strony w tym punkcie
 	for (auto it = _notes.rbegin(); it != _notes.rend(); ++it)
 	{
 		dist = dist - it->position.first;
@@ -127,7 +127,8 @@ void Notes::findValue()
 }
 
 void Notes::findPitch(Image1CH & edges)
-{
+{ /*Funkcja oblicza odleg³oœæ œrodka nuty od górnej granicy piêciolinii,
+  na której ona siê znajduje.*/
 	for (auto it = _notes.begin(); it != _notes.end(); ++it)
 	{
 		int upperLine = it->position.second;

@@ -28,10 +28,15 @@ public:
 	Corelation();
 	Corelation(Image1CH & image);
 	~Corelation();
+	//obliczenie korelacji obrazu z mask¹
 	void calcCorelation(Image1CH & image);
+	//znajduje œrodki nut na podstawie vecotra maksimów korelacji
 	void findNotesCenters();
+	//zwraca vector par bêd¹cyh wspó³rzêdnymi œrodków nut
 	std::vector<std::pair<int, int>> getNotesCenters() { return _notesCenters; };
 private:
+	//alokuje pamiêæ na tablicê korelacji
 	void allocateMemory();
+	//tworzy plik obrazu z zaznaczonymi œrodkami wyszukanych nut na tle obrazu idealnego
 	void printNotesCenters();
 };

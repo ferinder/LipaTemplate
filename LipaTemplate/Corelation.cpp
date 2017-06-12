@@ -16,8 +16,6 @@ Corelation::Corelation(Image1CH &image)
 
 Corelation::~Corelation()
 {
-	this->_corelTab.clear();
-	this->_corelMask.clear();
 }
 
 void Corelation::allocateMemory()
@@ -28,9 +26,10 @@ void Corelation::allocateMemory()
 	}
 }
 
-void Corelation::calcCorelation(Image1CH & image) {
+void Corelation::calcCorelation(Image1CH & image)
+{
 	double temp;
-	Image1CH out(image.width(), image.height());
+	int maskVal = [&]()->int {int val = 0; for (auto iterator : _corelMask) for (auto iterator2 : iterator) val += iterator2; return val; }();
 	int distX, distY;
 	for (int i = 8; i < _width - 8; i++)
 	{
@@ -46,16 +45,13 @@ void Corelation::calcCorelation(Image1CH & image) {
 					temp += image(i - 8 + distX, j - 6 + distY).I() * *columnIt;
 				}
 			}
-			int maskVal = [&]()->int {int val = 0; for (auto iterator : _corelMask) for (auto iterator2 : iterator) val += iterator2; return val; }();
-			out(i, j).I() = temp / maskVal;
 			_corelTab[i][j] = temp / maskVal;
 		}
 	}
-	out.ShowImage("bin");
 }
 
 void Corelation::findNotesCenters()
-{
+{	
 	//znajdowanie maksimum lokalnego
 	double r = 0;
 	for (int i = 3; i < _width - 3; ++i)
@@ -75,6 +71,7 @@ void Corelation::findNotesCenters()
 			}
 		}
 	}
+	//printNotesCenters();
 
 	//usuwanie niew³aœciwych maksimów z piêciolinii le¿¹cych poza ni¹, lub na meritum
 	for (auto it = _notesCenters.begin(); it != _notesCenters.end(); ++it)
@@ -106,6 +103,8 @@ void Corelation::findNotesCenters()
 			}
 		}
 	}
+
+//	printNotesCenters();
 }
 
 void Corelation::printNotesCenters() {

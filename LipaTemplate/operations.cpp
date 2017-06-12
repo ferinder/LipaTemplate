@@ -4,19 +4,18 @@
 #include "operations.h"
 
 
-void rgbTogray(Image3CH& rgbImg, Image1CH& grayImg) // arguments with & because we want to save changes to images after performing funtion
+void rgbTogray(Image3CH& rgbImg, Image1CH& grayImg) 
 {
-	//Check if image sizes are equal
 	for (int i = 0; i < rgbImg.width(); i++) //iterate by rows
 		for (int j = 0; j < rgbImg.height(); j++) //iterate by cols
 		{
 			grayImg(i, j).Intensity() = (rgbImg(i, j).Red() + rgbImg(i, j).Green() + rgbImg(i, j).Blue()) / 3;
-			// I = (1/3)*(R+G+B) (i,j) - (number of row, number of col)
 		}
 }
 
 
-void binarization(Image1CH &image, double threshold) {
+void binarization(Image1CH &image, double threshold) 
+{
 	threshold = threshold / 256;
 	for (int i = 0; i < image.width(); ++i)
 		for (int j = 0; j < image.height(); ++j)
@@ -25,13 +24,18 @@ void binarization(Image1CH &image, double threshold) {
 };
 
 
-void median(Image1CH &image) {
-	std::vector<double> surrending;
+void median(Image1CH &image)
+{
+	std::vector<double> surrending(9);
 	Image1CH output(image.width(), image.height());
-	for (int i = 1; i < image.width() - 3; ++i) {
-		for (int j = 1; j < image.height() - 3; ++j) {
-			for (int k = -1; k < 2; ++k) {
-				for (int l = -1; l < 2; ++l) {
+	for (int i = 1; i < image.width() - 1; ++i) 
+	{
+		for (int j = 1; j < image.height() - 1; ++j) 
+		{
+			for (int k = -1; k < 2; ++k) 
+			{
+				for (int l = -1; l < 2; ++l)
+				{
 					surrending.push_back(image(i + k, j + l).I());
 				}
 			}
@@ -43,7 +47,8 @@ void median(Image1CH &image) {
 	image = output;
 }
 
-void histo(Image1CH& image) {
+void histo(Image1CH& image) 
+{
 	double fmin = 1;
 	double fmax = 0;
 	for (int i = 0; i < image.width(); ++i)  //iterate by rows
@@ -76,69 +81,6 @@ void findNotes(Corelation & cor, Image1CH &edges)
 	Notes notes(cor, edges);
 }
 
-bool findZeros(std::vector<int> &vec) {
-
-	for (auto it = vec.cbegin(); it != vec.cend(); ++it)
-	{
-		if (!*it) return true;
-	}
-	return false;
-}
-
-
-void erode(Image1CH & input)
-{
-	Image1CH output(input.width(), input.height());
-	std::vector<int> surrending;
-	for (int i = 1; i < input.width() - 1; ++i)
-	{
-		for (int j = 1; j < input.height() - 1; ++j)
-		{
-			for (int k = -1; k < 2; ++k)
-			{
-				for (int l = -1; l < 2; ++l)
-				{
-					surrending.push_back(input(i + k, j + l).I());
-				}
-			}
-			if (findZeros(surrending)) output(i, j).I() = 0;
-			else output(i, j).I() = 1;
-			surrending.clear();
-		}
-	}
-	input = output;
-}
-
-bool findOnes(std::vector<int> &vec) {
-
-	for (auto it = vec.cbegin(); it != vec.cend(); ++it)
-	{
-		if (*it) return true;
-	}
-	return false;
-}
-
-void dilatation(Image1CH & input)
-{
-	Image1CH output(input.width(), input.height());
-	std::vector<int> surrending(9);
-	for (int i = 1; i < input.width() - 1; ++i)
-	{
-		for (int j = 1; j < input.height() - 1; ++j)
-		{
-			for (int k = -1; k < 2; ++k)
-				for (int l = -1; l < 2; ++l)
-				{
-					surrending.push_back(input(i + k, j + l).I());
-				}
-			if (findOnes(surrending)) output(i, j).I() = 1;
-			else output(i, j).I() = 0;
-			surrending.clear();
-		}
-	}
-	input = output;
-}
-
 void findHorizontalEdges(Image1CH & image)
 {
 	Image1CH out(image.width(), image.height());
@@ -146,11 +88,15 @@ void findHorizontalEdges(Image1CH & image)
 							-2,  0, 2,
 							-1, 0, 1 };
 	double temp;
-	for (int i = 1; i < image.width() - 1; i++) {
-		for (int j = 100; j < image.height() / 2 - 1; j++) {
-			temp = 0;
-			for (int k = 0; k < 3; k++) {
-				for (int l = 0; l < 3; l++) {
+	for (int i = 1; i < image.width() - 1; i++)
+	{
+		for (int j = 100; j < image.height() / 2 - 1; j++)
+		{													 //podano takie zakresy, aby operacja by³a 
+			temp = 0;										 //przeprowadzana jedynie na interesuj¹cym nas obszarze
+			for (int k = 0; k < 3; k++) 
+			{
+				for (int l = 0; l < 3; l++) 
+				{
 					temp += image(i + k - 1, j + l - 1).I() *kernel[k][l];
 				}
 			}
@@ -177,7 +123,7 @@ void rhorerBinarization(Image1CH & image, double k)
 					avarge += image(i + k, j + l).I();
 				}
 			}
-			avarge = avarge / (625 * k);
+			avarge = avarge / (625 * k); //625 - iloœæ pikseli w otoczeniu
 			if (image(i, j).I() >= avarge)
 			{
 				output(i, j).I() = 0;
@@ -189,11 +135,5 @@ void rhorerBinarization(Image1CH & image, double k)
 		}
 	}
 	image = output;
-}
-
-void close(Image1CH & image)
-{
-	dilatation(image);
-	erode(image);
 }
 
